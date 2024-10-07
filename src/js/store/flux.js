@@ -56,6 +56,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			deleteContact: async (id) => {
+				try {
+					const response = await fetch(`https://playground.4geeks.com/contact/agendas/agendaYojan/contacts/${id}`,
+						{
+							method: "DELETE",
+							headers: {
+								"Content-Type": "application/json"
+							}
+						}
+					);
+					if (!response.ok) {
+						throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+					const data = await response.json();
+					console.log("deleteContact", data);
+				} catch (error) {
+					console.error("Error deleting contact:", error);
+				}
+			},
+
 			loadSomeData: () => {
 				/**
 					fetch().then().then(data => setStore({ "foo": data.bar }))

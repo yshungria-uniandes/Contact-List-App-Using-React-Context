@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
+
 const ContactCard = ({ id, name, email, address, phone }) => {
   const { actions } = useContext(Context);
   const navigate = useNavigate(); // Reemplazo de useHistory por useNavigate
@@ -39,7 +40,7 @@ const ContactCard = ({ id, name, email, address, phone }) => {
           </div>
           <div className="d-flex justify-content-end">
             <Link to={`/edit/${id}`} className="btn btn-outline-primary btn-sm me-2">
-              <i className="fas fa-edit"></i> Edit
+              <i className="fas fa-pencil-alt"></i> Edit
             </Link>
             <button className="btn btn-outline-danger btn-sm" onClick={handleDelete}>
               <i className="fas fa-trash-alt"></i> Delete

@@ -1,0 +1,121 @@
+import React, { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
+
+export const EditContact = () => {
+  const { store, actions } = useContext(Context);
+  const { id } = useParams(); // Obtenemos el id del contacto a editar
+  const navigate = useNavigate(); // Para redirigir después de editar
+  const [contact, setContact] = useState({
+    name: "",
+    email: "",
+    address: "",
+    phone: "",
+  });
+
+  // Cargar datos del contacto cuando se monta el componente
+  useEffect(() => {
+    const contactToEdit = store.contacts.find((c) => c.id === id);
+    if (contactToEdit) {
+      setContact(contactToEdit);
+    }
+  }, [id, store.contacts]);
+
+  // Actualizar el contacto en el estado local
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setContact({
+      ...contact,
+      [name]: value,
+    });
+  };
+
+  // Enviar formulario para actualizar el contacto
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await actions.updateContact(id, contact);
+    navigate("/"); // Redirigir a la página principal después de actualizar
+  };
+
+  return (
+    <div className="container my-5">
+      <h1 className="text-center display-4 text-primary">Edit Contact</h1>
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-lg-6">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">
+                Full Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                name="full_name"
+                value={contact.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                value={contact.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="address" className="form-label">
+                Address
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="address"
+                name="address"
+                value={contact.address}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="phone" className="form-label">
+                Phone
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="phone"
+                name="phone"
+                value={contact.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="d-flex justify-content-end">
+              <button type="submit" className="btn btn-primary">
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary ms-3"
+                onClick={() => navigate("/")}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ 
