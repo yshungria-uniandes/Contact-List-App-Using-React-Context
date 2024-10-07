@@ -12,7 +12,9 @@ const ContactCard = ({ id, name, email, address, phone }) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this contact?");
     if (confirmDelete) {
       await actions.deleteContact(id);
-      navigate("/"); // Navega a la página principal después de eliminar el contacto
+      // Actualizar manualmente si no estás viendo que el cambio se refleje automáticamente
+      pdatedContacts = store.contacts.filter((contact) => contact.id !== id);
+      setContactList(updatedContacts); // Asumiendo que tienes un estado de contactos en el componente de la lista
     }
   };
 
@@ -42,7 +44,8 @@ const ContactCard = ({ id, name, email, address, phone }) => {
             <Link to={`/edit/${id}`} className="btn btn-outline-primary btn-sm me-2">
               <i className="fas fa-pencil-alt"></i> Edit
             </Link>
-            <button className="btn btn-outline-danger btn-sm" onClick={handleDelete}>
+            <button className="btn btn-outline-danger btn-sm"
+              onClick={handleDelete}>
               <i className="fas fa-trash-alt"></i> Delete
             </button>
           </div>
@@ -53,7 +56,7 @@ const ContactCard = ({ id, name, email, address, phone }) => {
 };
 
 ContactCard.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,

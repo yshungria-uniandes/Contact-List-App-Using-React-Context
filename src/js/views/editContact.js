@@ -4,8 +4,10 @@ import { Context } from "../store/appContext";
 
 export const EditContact = () => {
   const { store, actions } = useContext(Context);
-  const { id } = useParams(); // Obtenemos el id del contacto a editar
+  const { id } = useParams(); // Obtenemos el id del contacto a editar desde la URL
   const navigate = useNavigate(); // Para redirigir después de editar
+
+  // Inicializamos el estado del contacto que se va a editar
   const [contact, setContact] = useState({
     name: "",
     email: "",
@@ -13,27 +15,32 @@ export const EditContact = () => {
     phone: "",
   });
 
-  // Cargar datos del contacto cuando se monta el componente
+  // Cargar datos del contacto cuando se monta el componente o cambia el store
   useEffect(() => {
+    // Buscar el contacto que se va a editar en store.contacts
     const contactToEdit = store.contacts.find((c) => c.id === id);
     if (contactToEdit) {
-      setContact(contactToEdit);
+      // Si se encuentra el contacto, se establece en el estado local
+      setContact((prevContact) => ({
+        ...prevContact,
+        ...contactToEdit,
+      }));
     }
   }, [id, store.contacts]);
 
-  // Actualizar el contacto en el estado local
+  // Manejador de cambios en los inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setContact({
-      ...contact,
+    setContact((prevContact) => ({
+      ...prevContact,
       [name]: value,
-    });
+    }));
   };
 
   // Enviar formulario para actualizar el contacto
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await actions.updateContact(id, contact);
+    actions.updateContact(id, contact); // Actualizar el contacto en el contexto
     navigate("/"); // Redirigir a la página principal después de actualizar
   };
 
@@ -51,7 +58,7 @@ export const EditContact = () => {
                 type="text"
                 className="form-control"
                 id="name"
-                name="full_name"
+                name="name"
                 value={contact.name}
                 onChange={handleChange}
                 required
@@ -117,5 +124,3 @@ export const EditContact = () => {
     </div>
   );
 };
-
- 
