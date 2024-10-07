@@ -1,17 +1,11 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			contacts: [],
 			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
+				{ title: "First title", background: "orange", initial: "white" },
+				{ title: "Second title", background: "blue", initial: "white" },
+				{ title: "Third title", background: "red", initial: "white" }
 			]
 		},
 		actions: {
@@ -19,6 +13,49 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+
+			loadContacts: async () => {
+				try {
+					const response = await fetch("https://playground.4geeks.com/contact/agendas/agendaYojan",
+						{
+							method: "GET",
+							headers: {
+								"Content-Type": "application/json"
+							}
+						}
+					);
+					if (!response.ok) {
+						throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+					const data = await response.json();
+					setStore({ contacts: data.contacts });
+					console.log("contacts", data.contacts);
+				} catch (error) {
+					console.error("Error loading contacts:", error);
+				}
+			},
+
+			addContact: async (contact) => {
+				try {
+					const response = await fetch("https://playground.4geeks.com/contact/agendas/agendaYojan/contacts",
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify(contact)
+						}
+					);
+					if (!response.ok) {
+						throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+					const data = await response.json();
+					console.log("addContact", data);
+				} catch (error) {
+					console.error("Error adding contact:", error);
+				}
+			},
+
 			loadSomeData: () => {
 				/**
 					fetch().then().then(data => setStore({ "foo": data.bar }))
