@@ -13,6 +13,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+			createAgenda: async () => { 
+				try {
+					const response = await fetch("https://playground.4geeks.com/contact/agendas/agendaYojan",
+						{
+							method: "POST",
+						}
+					);
+
+					if (!response.ok) {
+						throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+					const data = await response.json();
+					console.log("createAgenda", data);
+				} catch (error) {
+					console.error("Error creating agenda:", error);
+				}
+			},
+
+
 
 			loadContacts: async () => {
 				try {
@@ -24,6 +43,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 							}
 						}
 					);
+					if (response.status === 404) {
+						getActions().createAgenda();
+					}
 					if (!response.ok) {
 						throw new Error(`HTTP error! Status: ${response.status}`);
 					}
@@ -71,11 +93,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (!response.ok) {
 						throw new Error(`HTTP error! Status: ${response.status}`);
 					}
-					const data = await response.json();
-					if (data.msg === "OK") {
-						const updatedContacts = getStore().contacts.filter((contact) => contact.id !== id);
-						setStore({ contacts: updatedContacts });
-					}
+				
+					const updatedContacts = getStore().contacts.filter((contact) => contact.id !== id);
+
+					setStore({ contacts: updatedContacts });
+					
 				}
 				catch (error) {
 					console.error("Error deleting contact:", error);
@@ -97,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(`HTTP error! Status: ${response.status}`);
 					}
 					const data = await response.json();
-					console.log("updateContact", data);
+					setStore({ contacts: getStore().contacts.map((c) => c.id === Number(id) ? data : c) });
 				} catch (error) {
 					console.error("Error updating contact:", error);
 				}

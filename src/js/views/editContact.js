@@ -17,15 +17,19 @@ export const EditContact = () => {
 
   // Cargar datos del contacto cuando se monta el componente o cambia el store
   useEffect(() => {
-    // Buscar el contacto que se va a editar en store.contacts
-    const contactToEdit = store.contacts.find((c) => c.id === id);
-    if (contactToEdit) {
-      // Si se encuentra el contacto, se establece en el estado local
-      setContact((prevContact) => ({
-        ...prevContact,
-        ...contactToEdit,
-      }));
+    if (store.contacts){
+      if (store.contacts.length  > 0 && id){
+        const contactToEdit = store.contacts.find((c) => c.id === Number(id));
+        if (contactToEdit) {
+          setContact((prevContact) => ({
+            ...prevContact,
+            ...contactToEdit,
+          }));
+        }
+        
+      }
     }
+  
   }, [id, store.contacts]);
 
   // Manejador de cambios en los inputs
